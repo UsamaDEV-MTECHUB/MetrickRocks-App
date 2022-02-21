@@ -24,6 +24,7 @@ import ForgetPasswordScreen from './app/src/views/screens/logins/ForgetPasswordS
 import NewPasswordScreen from './app/src/views/screens/logins/NewPasswordScreen';
 import HomeScreen from './app/src/views/screens/home/HomeScreen';
 import Analytics from './app/src/views/screens/home/Analytics';
+import WebB from './app/src/views/screens/home/WebB';
 import MyProfile from './app/src/views/screens/profile/MyProfile';
 import Settings from './app/src/views/screens/profile/Settings';
 
@@ -42,6 +43,7 @@ function AfterLoginStack({ navigation, route }) {
       <afterLoginStack.Navigator screenOptions={{ header: () => null }}>
         <afterLoginStack.Screen name="HomeScreen" component={HomeScreen} />
         <afterLoginStack.Screen name="Analytics" component={Analytics} />
+        <afterLoginStack.Screen name="WebB" component={WebB} />
         <afterLoginStack.Screen name="MyProfile" component={MyProfile} />
         <afterLoginStack.Screen name="Settings" component={Settings} />
 
