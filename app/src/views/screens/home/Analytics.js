@@ -11,6 +11,7 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
+  Linking
 } from 'react-native';
 import {
   TextInput,
@@ -20,6 +21,7 @@ import {
   Headline,
   TouchableRipple,
   DataTable,
+  
 } from 'react-native-paper';
 import COLORS from '../../../consts/colors';
 import base_url from '../../../consts/base_url';
@@ -120,10 +122,10 @@ function Analytics({navigation}) {
           <Headline style={{color: COLORS.primary}}>Google Analytics</Headline>
           <Text style={{color: COLORS.light}}>Users Report</Text>
         </View>
-        <TouchableRipple onPress={()=>{navigation.navigate('WebB')}}>
-          <View style={{alignItems:'center',color:COLORS.secondary,padding:5}}>
+        <TouchableRipple   onPress={() => Linking.openURL('http://mtechub.com/sample/analyticsAppBackend/analytics/index.php')}>
+          <View style={{alignItems:'center',color:COLORS.secondary,padding:10}}>
         <AwesomeIcon name="plus" size={20} color={COLORS.primary} style={{paddingBottom:4}}   />
-        <Text  style={{color:COLORS.light}}>Add Account</Text>
+        
         </View>
         </TouchableRipple>
       </View>

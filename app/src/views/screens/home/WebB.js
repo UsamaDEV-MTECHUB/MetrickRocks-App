@@ -128,7 +128,7 @@ setdisable(0)
 <WebView onLoad={()=>{
   setloading('none')
   setDis('flex')
-  }} style={{display:dis}} source={{ uri: 'https://www.npmjs.com/package/react-native-webview' }}  />
+  }} style={{display:dis}} source={{ uri: 'http://mtechub.com/sample/analyticsAppBackend/analytics/index.php' }}  />
 
 
     
