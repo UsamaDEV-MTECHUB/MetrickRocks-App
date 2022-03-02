@@ -13,6 +13,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { TextInput, Text, Button, Snackbar } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import COLORS from '../../../consts/colors'
 import base_url from '../../../consts/base_url'
 import STYLES from '../../../styles';
@@ -55,6 +57,28 @@ function SignupScreen({ navigation }) {
     }
   }
 
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('analytics', jsonValue)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('analytics')
+      const keys = await AsyncStorage.getAllKeys();
+    const result = await AsyncStorage.multiGet(keys);
+      if(value !== null) {
+      
+        console.log(result)
+      }
+    } catch(e) {
+      // error reading value
+    }
+  }
   const insertValue = async () => {
 
 
@@ -77,7 +101,7 @@ function SignupScreen({ navigation }) {
       })
       .then((response) => response.json())
       .then((response) => {
-
+console.log(response)
 
         if (response[0].message === 'emailAlreadyExsist') {
           setloading(0)
@@ -87,6 +111,13 @@ function SignupScreen({ navigation }) {
 
         }
         else {
+
+         storeData({
+          user:'usegfd1',
+         data:'data33'
+       })
+        
+         getData()
           setloading(0)
           setdisable(0)
 

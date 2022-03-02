@@ -21,83 +21,70 @@ import {
   Headline,
   TouchableRipple,
   DataTable,
+  ActivityIndicator
   
 } from 'react-native-paper';
 import COLORS from '../../../consts/colors';
 import base_url from '../../../consts/base_url';
 import STYLES from '../../../styles';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import {WebView} from 'react-native-webview';
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 function Analytics({navigation}) {
-  const [password, setPassword] = useState('');
-  const [compassword, setCompassword] = useState('');
-  const [showPass, setShowPass] = useState(false);
-  // snackbar
+  const isFocused = useIsFocused();
+  // loader 
 
-  const [visible, setVisible] = useState(false);
-  const [snackbarValue, setsnackbarValue] = useState({value: '', color: ''});
-  const onDismissSnackBar = () => setVisible(false);
-
-  // login api call
-  const [loading, setloading] = useState(0);
-  const [disable, setdisable] = useState(0);
-
-  const checkValue = async () => {
-    if (compassword.length == 0 || password.length == 0) {
-      console.log('fields are empty');
-      setsnackbarValue({value: 'Some fields are Empty', color: 'red'});
-      setVisible('true');
-    } else if (compassword !== password) {
-      console.log('Password Not matched');
-      setsnackbarValue({value: 'Password Not matched', color: 'red'});
-      setVisible('true');
-    } else {
-      setloading(1);
-      setdisable(1);
-      insertValue();
-    }
-  };
-  const insertValue = async () => {
-    var InsertAPIURL = base_url + '/user/updatePassword.php';
+  const [visible, setVisible] = useState('none');
+  
+  const getDataa = async () => {
+    setVisible('flex')
+    var InsertAPIURL = base_url + '/analytics/analytics.php';
     var headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     };
-    var Data = {
-      password: password,
-      email: email,
-    };
+    // var Data = {
+    //   password: password,
+    //   email: email,
+    // };
     await fetch(InsertAPIURL, {
-      method: 'POST',
+      method: 'GET',
       headers: headers,
-      body: JSON.stringify(Data),
+      // body: JSON.stringify(Data),
     })
       .then(response => response.json())
       .then(response => {
         // setloading(false);
-        setloading(0);
-        setdisable(0);
-        setPassword('');
-        setCompassword('');
-        setsnackbarValue({
-          value: 'Updated , Redirecting to Login...',
-          color: 'green',
-        });
-        setVisible('true');
-        setTimeout(() => {
-          navigation.navigate('SignInScreen');
-        }, 1000);
+        setVisible('none')
+        console.log(response);
       })
       .catch(error => {
-        setloading(0);
-        setdisable(0);
+       
         alert('error' + error);
       });
   };
+
+useEffect(() => {
+  // setlogin(true)
+  Linking.addEventListener('url', ({url}) => {
+    const route = url.replace(/.*?:\/\//g, '');
+
+    const a = route.split('/')[1];
+    const r = route.split('/')[2];
+    const q = route.split('/')[3];
+    console.log(a);
+    console.log(r);
+    console.log(q);
+    getDataa()
+    // alert('web : ' + r + ' user: ' + q);
+    // navigation.navigate('Analytics');
+    // console.log(navigation)
+  });
+  getDataa()
+}, [isFocused]);
 
   return (
     <View
@@ -110,16 +97,22 @@ function Analytics({navigation}) {
         style={{
           marginTop: 20,
           alignItems: 'center',
-          marginHorizontal:10,
+          marginHorizontal:5,
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
+           <TouchableRipple   onPress={() => {navigation.goBack()}}>
+          <View style={{alignItems:'center',color:COLORS.secondary,padding:10}}>
+        <AwesomeIcon name="arrow-left" size={20} color={COLORS.light} style={{paddingBottom:4}}   />
+        
+        </View>
+        </TouchableRipple>
         <Image
           style={{width: 30, height:30, alignSelf: 'center'}}
           source={require('../../../assets/analytics.png')}
         />
         <View>
-          <Headline style={{color: COLORS.primary}}>Google Analytics</Headline>
+          <Headline style={{color: COLORS.secondary}}>Google Analytics</Headline>
           <Text style={{color: COLORS.light}}>Users Report</Text>
         </View>
         <TouchableRipple   onPress={() => Linking.openURL('http://mtechub.com/sample/analyticsAppBackend/analytics/index.php')}>
@@ -133,52 +126,32 @@ function Analytics({navigation}) {
         style={{
           marginVertical: 10,
           borderBottomColor: COLORS.light,
-          borderBottomWidth: 1,
+          borderBottomWidth: .5,
         }}></View>
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>Dessert</DataTable.Title>
-          <DataTable.Title numeric>Calories</DataTable.Title>
-          <DataTable.Title numeric>Fat</DataTable.Title>
+           <ActivityIndicator animating={true} color={COLORS.primary} size={'large'} style={{padding:100,display:visible}}  />
+      <DataTable
+      style={{
+        paddingHorizontal:10,
+        display:visible=='flex' ? 'none' :'flex'
+      }}
+      >
+        <DataTable.Header
+        
+        >
+          <DataTable.Title 
+          
+          >Websites </DataTable.Title>
+          <DataTable.Title numeric>Users</DataTable.Title>
         </DataTable.Header>
-
-        <DataTable.Row>
-          <DataTable.Cell>Frozen yogurt</DataTable.Cell>
-          <DataTable.Cell numeric>159</DataTable.Cell>
+      
+        <DataTable.Row >
+          <DataTable.Cell >159</DataTable.Cell>
           <DataTable.Cell numeric>6.0</DataTable.Cell>
         </DataTable.Row>
 
-        <DataTable.Row>
-          <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-          <DataTable.Cell numeric>237</DataTable.Cell>
-          <DataTable.Cell numeric>8.0</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-          <DataTable.Cell numeric>237</DataTable.Cell>
-          <DataTable.Cell numeric>8.0</DataTable.Cell>
-        </DataTable.Row>
       </DataTable>
 
-      <Snackbar
-        duration={200}
-        visible={visible}
-        onDismiss={onDismissSnackBar}
-        action={
-          {
-            // label: 'Undo',
-            // onPress: () => {
-            //   // Do something
-            // },
-          }
-        }
-        style={{
-          backgroundColor: snackbarValue.color,
-          marginBottom: height / 4,
-          zIndex: 999,
-        }}>
-        {snackbarValue.value}
-      </Snackbar>
+      
       
     </View>
   );
