@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -37,8 +37,14 @@ function SignInScreen({navigation}) {
   // login api call
   const [loading, setloading] = useState(0);
   const [disable, setdisable] = useState(0);
+  
+  // check logins 
+  const [login, setlogin] = useState(1);
+
+  // check logins end
   /// store user deatil
   const storeUser_detail = async value => {
+    
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem('user_detail', jsonValue);
@@ -50,12 +56,25 @@ function SignInScreen({navigation}) {
 
   // reading user data
   const getUser_detail = async () => {
+    setlogin(1)
     try {
       const value = await AsyncStorage.getItem('user_detail');
-      setTimeout(() => {
-        console.log('storage val:');
-        console.log(JSON.parse(value));
-      }, 1000);
+      // setTimeout(() => {
+      //   console.log('storage val:');
+      //   console.log(JSON.parse(value));
+      // }, 1000);
+
+      if(value==null) {
+        console.log('no user is login')
+        setlogin(0)
+      }
+      else {
+      console.log('storage vall:')
+      
+      navigation.navigate('HomeScreen')
+      console.log(JSON.parse(value))
+      
+      }
     } catch (e) {
       // error reading value
     }
@@ -98,7 +117,16 @@ function SignInScreen({navigation}) {
           setdisable(0);
           setsnackbarValue({value: 'Email Already Exsist', color: 'red'});
           setVisible('true');
-        } else {
+        } 
+        
+        else if (response[0].message === 'emailorpasswordisincorrect') {
+          setloading(0);
+          setdisable(0);
+          setsnackbarValue({value: 'Email or Password is Incorrect', color: 'red'});
+          setVisible('true');
+        } 
+        
+        else {
           setloading(0);
           setdisable(0);
           storeUser_detail(response[0]);
@@ -115,7 +143,10 @@ function SignInScreen({navigation}) {
         alert('error' + error);
       });
   };
-
+  useEffect(() => {
+    
+    getUser_detail();
+  },[]);
   return (
     <ScrollView
       style={{
@@ -123,7 +154,21 @@ function SignInScreen({navigation}) {
         flex: 1,
         backgroundColor: COLORS.white,
       }}>
-      <SafeAreaView
+        {login ==1  ? 
+        <View style={{
+          height:height,
+          alignContent:'center',
+          justifyContent:'center',
+          flexDirection:'row',
+          alignItems:'center',
+        }}>
+<Image
+            style={{width: 310, height: 67}}
+            source={require('../../../assets/logo.png')}
+          /> 
+        </View>
+        : <View>
+            <SafeAreaView
         style={{
           marginHorizontal: '4%',
           backgroundColor: COLORS.white,
@@ -243,6 +288,9 @@ function SignInScreen({navigation}) {
           </View>
         </View>
       </SafeAreaView>
+            </View>}
+         
+      
     </ScrollView>
   );
 }

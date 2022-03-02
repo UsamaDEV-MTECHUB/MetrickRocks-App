@@ -129,7 +129,7 @@ function Settings({ navigation }) {
             onPress={() => {
               // checkValue()
               removeValue()
-              RNRestart.Restart();
+              navigation.replace('SignInScreen');
             }}
             loading={loading}
             disabled={disable}

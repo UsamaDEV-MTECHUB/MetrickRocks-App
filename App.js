@@ -45,71 +45,38 @@ const afterLoginStack = createNativeStackNavigator();
 //   );
 // }
 const App = ({navigation, route}) => {
-  const [y, sety] = useState('none');
-  const storeData = async (value) => {
+  const [y, sety] = useState(false);
+  const [isLogin, setisLogin] = useState(null);
+  const getUser_detail =  () => {
     try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('analytics', jsonValue)
+        const value =  AsyncStorage.getItem('user_detail')
+        
+            
+              // setisLogin(true)
+            console.log('storage val:')
+            
+            setisLogin(JSON.parse(value))
+            
+            console.log(JSON.parse(value))
+             
+            
+            
+       
+  
     } catch (e) {
-      console.log(e)
+        // error reading value
     }
-  }
+  }  
 
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('analytics')
-      const keys = await AsyncStorage.getAllKeys();
-    const result = await AsyncStorage.multiGet(keys);
-      if(value !== null) {
-      
-        console.log(result)
-      }
-    } catch(e) {
-      // error reading value
-    }
-  }
-  const getUser_detail = async () => {
-    const value = await AsyncStorage.getItem('user_detail');
-
-    var x = JSON.parse(value);
-    if (value === null) {
-      sety('none');
-      console.log('no user is login');
-    } else {
-      sety('flex');
-      console.log(JSON.parse(value));
-    }
-    console.log(y);
-  };
-
-  // useEffect(() => {
-  //   // setlogin(true)
-  //   Linking.addEventListener('url', ({url}) => {
-  //     const route = url.replace(/.*?:\/\//g, '');
-
-  //     const a = route.split('/')[1];
-  //     const r = route.split('/')[2];
-  //     const q = route.split('/')[3];
-  //     console.log(a);
-  //     console.log(r);
-  //     console.log(q);
-  //     storeData({
-  //       user:'new',
-  //      data:'new1'
-  //    })
-      
-  //      getData()
-  //     // alert('web : ' + r + ' user: ' + q);
-  //     // navigation.navigate('Analytics');
-  //     // console.log(navigation)
-  //   });
-  //   getUser_detail();
-  // });
+  useEffect(() => {
+    
+    getUser_detail();
+  },[]);
   return (
     <NavigationContainer independent={true}>
       <loginStack.Navigator
         screenOptions={{header: () => null}}
-        initialRouteName={y == 'none' ? 'Analytics' : 'Analytics'}>
+        initialRouteName={isLogin === null ? 'SignInScreen' : 'HomeScreen'}>
         <loginStack.Screen name="SignInScreen" component={SignInScreen} />
         <loginStack.Screen name="SignupScreen" component={SignupScreen} />
         <loginStack.Screen

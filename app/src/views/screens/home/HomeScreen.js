@@ -18,11 +18,13 @@ import base_url from '../../../consts/base_url'
 import STYLES from '../../../styles';
 import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 function NewPasswordScreen({ navigation }) {
-  const [password, setPassword] = useState('')
+  const [username, setusername] = useState('')
   const [compassword, setCompassword] = useState('')
   const [showPass,setShowPass]= useState(false)
   // snackbar
@@ -35,70 +37,34 @@ function NewPasswordScreen({ navigation }) {
 const [loading, setloading] = useState(0);
 const [disable, setdisable] = useState(0);
 
-
-  const checkValue = async () => {
-
-    if (compassword.length == 0 || password.length== 0) {
-      console.log('fields are empty');
-      setsnackbarValue({ value: 'Some fields are Empty', color: 'red' })
-      setVisible('true')
-    }
-    else if (compassword !== password) {
-      console.log('Password Not matched');
-      setsnackbarValue({ value: 'Password Not matched', color: 'red' })
-      setVisible('true')
-    }
+/// store user deatil
+const storeUser_detail = async value => {
     
-    else {
-     setloading(1)
-     setdisable(1)
-     insertValue()
-    }
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('user_detail', jsonValue);
+  } catch (e) {
+    // saving error
   }
-  const insertValue = async () => {
+};
+// user deatil soter end
 
+// reading user data
+const getUser_detail = async () => {
+          
+  const value = await AsyncStorage.getItem('user_detail')
+  
+  var x = JSON.parse(value);
+    
+    setusername(x.username)
+    
 
-    var InsertAPIURL = base_url + '/user/updatePassword.php'
-    var headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-    }
-    var Data = {
-
-        password: password,
-        email: email,
-
-    }
-    await fetch(InsertAPIURL,
-        {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(Data),
-        })
-        .then((response) => response.json())
-        .then((response) => {
-          // setloading(false);
-          setloading(0)
-          setdisable(0)
-          setPassword('')
-          setCompassword('')
-          setsnackbarValue({ value: 'Updated , Redirecting to Login...', color: 'green' })
-          setVisible('true')
-              setTimeout(() => {
-                navigation.navigate('SignInScreen')
-            }, 1000);
-
-        })
-        .catch((error) => {
-          setloading(0)
-setdisable(0)
-            alert('error' + error)
-           
-        })
-      
-
-   
-  }
+} 
+// reading user data end
+useEffect(() => {
+    
+  getUser_detail();
+},[]);
  
   return (
    
@@ -108,6 +74,7 @@ setdisable(0)
         paddingHorizontal: '4%',
         backgroundColor:'white',
        flex:1,
+       height:height
       }} 
       >
       <View style={{ flexDirection: 'column', marginVertical: '10%', justifyContent: "center" }}>
@@ -116,7 +83,7 @@ setdisable(0)
           source={require('../../../assets/logo.png')}
         /> */}
 <Headline style={{fontWeight:'900',fontSize:30}}>Welcome</Headline>
-<Headline style={{fontWeight:'900',fontSize:30}}>JHON DOE</Headline>
+<Headline style={{fontWeight:'900',fontSize:40,paddingTop:20}}>{username}</Headline>
       </View>
       <TouchableRipple 
       borderless
